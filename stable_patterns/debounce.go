@@ -7,7 +7,7 @@ import (
 )
 
 func myFunction(ctx context.Context) (string, error) {
-	return "responce", nil
+	return "success", nil
 }
 func DebounceFirst(circuit Circuit, duration time.Duration) Circuit {
 	var threshlod time.Time
