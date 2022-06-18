@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -47,4 +48,59 @@ func TimeOut_test() {
 	res, err := timeOut(withTimeout, "success")
 	fmt.Println(res, err)
 
+}
+func FanIn_test() {
+	sources := make([]<-chan int, 0)
+	for i := 0; i < 3; i++ {
+		ch := make(chan int)
+		sources = append(sources, ch)
+		go func() {
+			defer close(ch)
+			for i := 0; i < 5; i++ {
+				ch <- i
+				time.Sleep(time.Second)
+			}
+		}()
+	}
+	dest := Funnel(sources...)
+	for d := range dest {
+		fmt.Println(d)
+
+	}
+}
+func FanOut_test() {
+	source := make(chan int)
+	dests := Split(source, 5)
+	go func() {
+		for i := 1; i < 10; i++ {
+			source <- i
+		}
+		close(source)
+	}()
+	var wg sync.WaitGroup
+	wg.Add(len(dests))
+	for i, ch := range dests {
+		go func(i int, d <-chan int) {
+			defer wg.Done()
+			for val := range d {
+				fmt.Printf("#%d got %d\n", i, val)
+			}
+		}(i, ch)
+	}
+	wg.Wait()
+}
+func ShardedMap_test() {
+	shardedMap := NewShardedMap(5)
+	shardedMap.Set("alpha", 1)
+	shardedMap.Set("beta", 2)
+	shardedMap.Set("gama", 3)
+	shardedMap.Set("teta", 4)
+	fmt.Println(shardedMap.Get("alpha"))
+	fmt.Println(shardedMap.Get("beta"))
+	fmt.Println(shardedMap.Get("gama"))
+	fmt.Println(shardedMap.Get("teta"))
+	keys := shardedMap.Keys()
+	for _, key := range keys {
+		fmt.Println(key)
+	}
 }
