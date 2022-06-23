@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	cmd.InitializeTransactionLog()
+	err := cmd.InitializePostgresTransactionLog()
+	if err != nil {
+		log.Fatal(err)
+	}
 	r := mux.NewRouter()
 	r.HandleFunc("/v1/{key}", cmd.KeyValuePutHandler).Methods("PUT")
 	r.HandleFunc("/v1/{key}", cmd.KeyValueGetHandler).Methods("GET")
