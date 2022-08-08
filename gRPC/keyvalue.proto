@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "cloud-go-project/cmd/gRPC";
+
+message GetRequest{
+  string key = 1;
+}
+message GetResponce{
+  string value = 1;
+}
+message PutRequest{
+  string key = 1;
+  string value = 2;
+}
+message PutResponce{}
+
+message DeleteRequest{
+  string key = 1;
+}
+message DeleteResponce{}
+
+service KeyValue{
+  rpc Get(GetRequest) returns (GetResponce);
+  rpc Put(PutRequest) returns (PutResponce);
+  rpc Delete(DeleteRequest) returns (DeleteResponce);
+}

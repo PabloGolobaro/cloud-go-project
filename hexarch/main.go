@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
+
+	//*********************************************************
 	os.Setenv("TLOG_TYPE", os.Args[1])
 	fmt.Println(os.Args[1])
 	os.Setenv("FRONTEND_TYPE", os.Args[2])

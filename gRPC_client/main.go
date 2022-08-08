@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cloud-go-project/cmd/gRPC"
+	gRPC2 "cloud-go-project/gRPC"
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,7 +22,7 @@ func main() {
 		log.Fatal("did not connect: %v", err)
 	}
 	defer conn.Close()
-	client := gRPC.NewKeyValueClient(conn)
+	client := gRPC2.NewKeyValueClient(conn)
 	var action, key, value string
 	if len(os.Args) > 2 {
 		action, key = os.Args[1], os.Args[2]
@@ -32,19 +32,19 @@ func main() {
 	defer cancel()
 	switch action {
 	case "get":
-		responce, err := client.Get(ctx, &gRPC.GetRequest{Key: key})
+		responce, err := client.Get(ctx, &gRPC2.GetRequest{Key: key})
 		if err != nil {
 			log.Fatal("could not get value for key %s: %v", key, err)
 		}
 		log.Printf("Get %s returns: %s", key, responce.Value)
 	case "put":
-		_, err := client.Put(ctx, &gRPC.PutRequest{Key: key, Value: value})
+		_, err := client.Put(ctx, &gRPC2.PutRequest{Key: key, Value: value})
 		if err != nil {
 			log.Fatal("could not put value for key %s: %v", key, err)
 		}
 		log.Printf("Put %s", key)
 	case "delete":
-		_, err := client.Delete(ctx, &gRPC.DeleteRequest{Key: key})
+		_, err := client.Delete(ctx, &gRPC2.DeleteRequest{Key: key})
 		if err != nil {
 			log.Fatal("could not delte value for key %s: %v", key, err)
 		}
